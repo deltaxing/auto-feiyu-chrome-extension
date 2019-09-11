@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <title>Page Title</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" type="text/css" media="screen" href="main.css" />
+</head>
+<body>
+    <input>
+    <br>
+    <input id="username" type="text">
+    <input id="msg" type="text">
+    <input id="btnSend" type="button" value="send">
+
+    <script src="socket.io.js"></script>
+    <script >
+            async function Main(){            
+                var username = document.querySelector('#username').value = "BeiHang";
+                //var socket = io('https://feiyu.gocoxing.cn');
+				//var socket = io('http://192.168.68.184:3001');
+				var socket = io('http://localhost:3001');
+                socket.on('connect', ()=>{
+                    //document.querySelector('input').value = "connected";
+                    socket.emit('join', username, (data) => {
+                          console.log(data); // data will be 'woot'
+                    });
+                }).on('message', (msg) => {
+                    document.body.append(document.createElement('p',{text: msg}))
+                });
+
+                document.querySelector('#btnSend').onclick = () => {
+                    var msg = document.querySelector('#msg').value;
+                    socket.send(msg);
+                    document.body.append(document.createElement('p',{text: msg}))
+                }
+
+
+                // Create a class for the element
+                class ExpandingList extends HTMLUListElement {
+                    constructor() {
+                    // Always call super first in constructor
+                    super();
+                
+                    // constructor definition left out for brevity
+                    this.innerText = 'from ExpandingList'
+                    this.xing = 'cococo'
+                    this.attributes.myattr = 'it is mine'
+                    }
+                }
+                
+                // Define the new element
+                customElements.define('expanding-list', ExpandingList, { extends: "ul" });
+
+                let expandingList = document.createElement('ul', { is : 'expanding-list' });
+
+                document.body.append(expandingList);
+
+                // Create a class for the element
+                class  xing extends ExpandingList {
+                    constructor() {
+                    // Always call super first in constructor
+                    super();
+                
+                    // constructor definition left out for brevity
+                    this.innerText += 'from xing'
+                    this.xing = 'cococo'
+                    this.attributes.myattr = 'it is mine'
+                    }
+                }
+                
+                // Define the new element
+                customElements.define('xing', xing, { extends: "expanding-list" });
+
+                let xinge = document.createElement('expanding-list', { is : 'xing' });
+
+                document.body.append(xinge);
+            }
+            
+            Main().then();
+
+    </script>
+</body>
+</html>
